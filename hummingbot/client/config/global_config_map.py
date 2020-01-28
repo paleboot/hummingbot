@@ -193,6 +193,16 @@ global_config_map = {
                   prompt="Enter your bitcoin_com secret key >>> ",
                   required_if=using_exchange("bitcoin_com"),
                   is_secure=True),
+    "upbit_api_key":
+        ConfigVar(key="upbit_api_key",
+                  prompt="Enter your upbit API key >>>",
+                  required_if=using_exchange("upbit"),
+                  is_secure=True),
+    "upbit_secret_key":
+        ConfigVar(key="upbit_secret_key",
+                  prompt="Enter your upbit secret key >>>",
+                  required_if=using_exchange("upbit"),
+                  is_secure=True),
     "wallet":
         ConfigVar(key="wallet",
                   prompt="Would you like to import an existing wallet or create a new wallet? (import/create) >>> ",

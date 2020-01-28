@@ -26,6 +26,7 @@ from hummingbot.market.bamboo_relay.bamboo_relay_market import BambooRelayMarket
 from hummingbot.market.idex.idex_market import IDEXMarket
 from hummingbot.market.dolomite.dolomite_market import DolomiteMarket
 from hummingbot.market.bitcoin_com.bitcoin_com_market import BitcoinComMarket
+from hummingbot.market.upbit.upbit_market import UpbitMarket
 from hummingbot.model.sql_connection_manager import SQLConnectionManager
 
 from hummingbot.wallet.ethereum.ethereum_chain import EthereumChain
@@ -65,7 +66,8 @@ MARKET_CLASSES = {
     "radar_relay": RadarRelayMarket,
     "dolomite": DolomiteMarket,
     "bittrex": BittrexMarket,
-    "bitcoin_com": BitcoinComMarket
+    "bitcoin_com": BitcoinComMarket,
+    "upbit": UpbitMarket
 }
 
 
@@ -365,6 +367,14 @@ class HummingbotApplication(*commands):
                                           order_book_tracker_data_source_type=OrderBookTrackerDataSourceType.EXCHANGE_API,
                                           trading_pairs=trading_pairs,
                                           trading_required=self._trading_required)
+            elif market_name == "upbit":
+                upbit_api_key = global_config_map.get("upbit_api_key").value
+                upbit_secret_key = global_config_map.get("upbit_secret_key").value
+                market = UpbitMarket(upbit_api_key,
+                                     upbit_secret_key,
+                                     order_book_tracker_data_source_type=OrderBookTrackerDataSourceType.EXCHANGE_API,
+                                     trading_pairs=trading_pairs,
+                                     trading_required=self._trading_required)
             else:
                 raise ValueError(f"Market name {market_name} is invalid.")
 
