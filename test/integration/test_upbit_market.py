@@ -59,7 +59,6 @@ class UpbitMarketUnitTest(unittest.TestCase):
         MarketEvent.SellOrderCompleted,
         MarketEvent.WithdrawAsset,
         MarketEvent.OrderFilled,
-        MarketEvent.OrderCancelled,
         MarketEvent.TransactionFailure,
         MarketEvent.BuyOrderCreated,
         MarketEvent.SellOrderCreated,

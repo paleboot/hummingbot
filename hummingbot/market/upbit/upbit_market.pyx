@@ -144,7 +144,8 @@ cdef class UpbitMarket(MarketBase):
     def split_trading_pair(trading_pair: str) -> Optional[Tuple[str, str]]:
         try:
             m = TRADING_PAIR_SPLITTER.match(trading_pair)
-            return m.group(1), m.group(2)
+            # Returns BASE ASSET & QUOTE ASSET; Upbit uses the format "QUOTE-BASE"
+            return m.group(2), m.group(1)
         # Exceptions are now logged as warnings in trading pair fetcher
         except Exception as e:
             return None
@@ -154,14 +155,12 @@ cdef class UpbitMarket(MarketBase):
         if UpbitMarket.split_trading_pair(exchange_trading_pair) is None:
             return None
         # Upbit uses the format "IDR-ETH" or "QUOTE-BASE"
-        quote_asset, base_asset = UpbitMarket.split_trading_pair(exchange_trading_pair)
+        base_asset, quote_asset = UpbitMarket.split_trading_pair(exchange_trading_pair)
         return f"{base_asset}-{quote_asset}"
 
     @staticmethod
-    def convert_to_exchange_trading_pair(trading_pair: str) -> str:
-        base_asset, quote_asset = UpbitMarket.split_trading_pair(trading_pair)
-        trading_pair = f"{quote_asset}-{base_asset}"
-        return trading_pair
+    def convert_to_exchange_trading_pair(hb_trading_pair: str) -> str:
+        return hb_trading_pair
 
     @property
     def name(self) -> str:
@@ -375,7 +374,7 @@ cdef class UpbitMarket(MarketBase):
         for info in raw_symbol_info:
             try:
                 trading_pair = UpbitMarket.split_trading_pair(info["market"])
-                if trading_pair[0] == 'IDR':
+                if trading_pair[1] == 'IDR':
                     if info["trade_price"] >= 20000000:
                         trading_rules.append(
                             TradingRule(trading_pair = info["market"],
@@ -449,7 +448,7 @@ cdef class UpbitMarket(MarketBase):
                                         min_base_amount_increment = Decimal("1e-8"),
                                         min_quote_amount_increment = Decimal("1e-1"))
                         )
-                elif trading_pair[0] == 'BTC':
+                elif trading_pair[1] == 'BTC':
                     trading_rules.append(
                         TradingRule(trading_pair = info["market"],
                                     min_order_size = round((0.0005 / info["trade_price"]), 8),
@@ -978,3 +977,9 @@ cdef class UpbitMarket(MarketBase):
             return trading_rule.max_order_size
 
         return quantized_amount
+
+    cdef object c_quantize_order_price(self, str trading_pair, object price):
+        if price.is_nan():
+            return price
+        price_quantum = self.c_get_order_price_quantum(trading_pair, price)
+        return Decimal(round(price / price_quantum) * price_quantum)

@@ -347,7 +347,6 @@ class TradingPairFetcher:
 
         return []
 
-    @staticmethod
     async def fetch_upbit_trading_pairs(self) -> List[str]:
         from hummingbot.market.upbit.upbit_market import UpbitMarket
 

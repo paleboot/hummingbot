@@ -472,7 +472,7 @@ cdef class PureMarketMakingStrategyV2(StrategyBase):
                 buy_price_with_tx_cost = buy_price
 
             buy_price_with_tx_cost = maker_market.c_quantize_order_price(market_info.trading_pair,
-                                                                         buy_price_with_tx_cost)
+                                                                         Decimal(buy_price_with_tx_cost))
 
             # If the buy price with transaction cost is less than or equal to zero
             # do not place orders
