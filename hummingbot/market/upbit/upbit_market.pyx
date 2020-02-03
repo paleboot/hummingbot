@@ -374,6 +374,11 @@ cdef class UpbitMarket(MarketBase):
         for info in raw_symbol_info:
             try:
                 trading_pair = UpbitMarket.split_trading_pair(info["market"])
+                """
+                Upbit differs tick size in IDR market based on their price
+                https://id.upbit.com/service_center/guide for more info
+                This might be different in SGD/KRW market, so please refer to each exchange's documentation
+                """
                 if trading_pair[1] == 'IDR':
                     if info["trade_price"] >= 20000000:
                         trading_rules.append(
@@ -615,6 +620,11 @@ cdef class UpbitMarket(MarketBase):
                                                                          tracked_order.fee_paid,
                                                                          tracked_order.order_type))
                     else:
+                        """
+                        Handles cancelled order
+                        Market price buy order's last_state always becomes cancel,
+                        So check needed whether or not any trades were executed
+                        """
                         if trades_count == 0:
                             self.c_stop_tracking_order(tracked_order.client_order_id)
                             self.logger().info(f"The market order {tracked_order.client_order_id} "
@@ -636,11 +646,7 @@ cdef class UpbitMarket(MarketBase):
                                                                         tracked_order.executed_amount_quote,
                                                                         tracked_order.fee_paid,
                                                                         tracked_order.order_type))
-                    """
-                    Handles cancelled order
-                    Market price buy order's last_state always becomes cancel,
-                    So check needed whether or not any trades were executed
-                    """
+
     async def _status_polling_loop(self):
         while True:
             try:
@@ -706,8 +712,7 @@ cdef class UpbitMarket(MarketBase):
         Upbit API requires that:
             1. for every market ask order price parameter is set to null, and
             2. for every market bid order volume parameter is set to null.
-        More information:
-        https://beta-docs.upbit.com/reference#order-1
+        https://beta-docs.upbit.com/reference#order-1 for more info
         """
         params = {
             "market": f"{trading_pair}",
