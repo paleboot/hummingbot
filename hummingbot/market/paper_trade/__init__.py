@@ -24,6 +24,7 @@ from hummingbot.market.bittrex.bittrex_market import BittrexOrderBookTracker, Bi
 from hummingbot.market.bitcoin_com.bitcoin_com_market import BitcoinComOrderBookTracker, BitcoinComMarket
 from hummingbot.market.liquid.liquid_market import LiquidOrderBookTracker, LiquidMarket
 from hummingbot.market.upbit.upbit_market import UpbitOrderBookTracker, UpbitMarket
+from hummingbot.market.kucoin.kucoin_market import KucoinOrderBookTracker, KucoinMarket
 
 ORDER_BOOK_TRACKER_CLASS = {
     "binance": BinanceOrderBookTracker,
@@ -36,7 +37,8 @@ ORDER_BOOK_TRACKER_CLASS = {
     "dolomite": DolomiteOrderBookTracker,
     "bitcoin_com": BitcoinComOrderBookTracker,
     "liquid": LiquidOrderBookTracker,
-    "upbit": UpbitOrderBookTracker
+    "upbit": UpbitOrderBookTracker,
+    "kucoin": KucoinOrderBookTracker
 }
 
 
@@ -51,7 +53,8 @@ MARKET_CLASSES = {
     "dolomite": DolomiteMarket,
     "bitcoin_com": BitcoinComMarket,
     "liquid": LiquidMarket,
-    "upbit": UpbitMarket
+    "upbit": UpbitMarket,
+    "kucoin": KucoinMarket
 }
 
 
